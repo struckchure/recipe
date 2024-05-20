@@ -15,12 +15,12 @@ $ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
 
 ```sh
 $ cd auth
-$ protoc --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative auth.proto
+$ protoc --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative proto/auth.proto
 ```
 
 - For Posts Service
 
 ```sh
 $ cd posts
-$ protoc --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative posts.proto
+$ protoc --go_out=pb --go_opt=paths=source_relative --go-grpc_out=pb --go-grpc_opt=paths=source_relative proto/posts.proto
 ```
