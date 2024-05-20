@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-with-micro-gateway
+spec:
+  selector:
+    matchLabels:
+      app: blog-with-micro-gateway
+  template:
+    metadata:
+      labels:
+        app: blog-with-micro-gateway
+    spec:
+      containers:
+        - name: blog-with-micro-gateway
+          image: ghcr.io/struckchure/recipe/blog-with-micro-gateway
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "128Mi"
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-with-micro-gateway-service
+spec:
+  selector:
+    app: blog-with-micro-gateway
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: blog-with-micro-gateway-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-nginx
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - blog-with-micro.k8s.orb.local
+      secretName: blog-with-micro-gateway-ingress-host
+  rules:
+    - host: blog-with-micro.k8s.orb.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: blog-with-micro-gateway-service
+                port:
+                  number: 3000

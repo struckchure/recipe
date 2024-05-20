@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blog-with-micro-posts
+spec:
+  selector:
+    matchLabels:
+      app: blog-with-micro-posts
+  template:
+    metadata:
+      labels:
+        app: blog-with-micro-posts
+    spec:
+      containers:
+        - name: blog-with-micro-posts
+          image: ghcr.io/struckchure/recipe/blog-with-micro-posts:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "500m"
+            limits:
+              memory: "128Mi"
+          ports:
+            - containerPort: 50052
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blog-with-micro-posts-service
+spec:
+  selector:
+    app: blog-with-micro-posts
+  ports:
+    - protocol: TCP
+      port: 50050
+      targetPort: 50052
