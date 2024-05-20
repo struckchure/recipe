@@ -5,9 +5,9 @@ AUTH_DIR=./auth
 POSTS_DIR=./posts
 GATEWAY_DIR=./gateway
 
-AUTH_IMAGE=ghcr.io/struckchure/recipe/blog-with-micro-auth
-POSTS_IMAGE=ghcr.io/struckchure/recipe/blog-with-micro-posts
-GATEWAY_IMAGE=ghcr.io/struckchure/recipe/blog-with-micro-gateway
+AUTH_IMAGE=ghcr.io/struckchure/blog-with-micro-auth
+POSTS_IMAGE=ghcr.io/struckchure/blog-with-micro-posts
+GATEWAY_IMAGE=ghcr.io/struckchure/blog-with-micro-gateway
 
 .PHONY: all build push auth auth-build auth-push posts posts-build posts-push gateway gateway-build gateway-push clean
 
