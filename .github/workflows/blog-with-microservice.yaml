@@ -35,7 +35,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
-            ghcr.io/struckchure/recipe/blog-with-micro-auth:latest
+            ghcr.io/struckchure/blog-with-micro-auth:latest
 
       - name: Build and push posts image
         uses: docker/build-push-action@v2
@@ -44,7 +44,7 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
-            ghcr.io/struckchure/recipe/blog-with-micro-posts:latest
+            ghcr.io/struckchure/blog-with-micro-posts:latest
 
       - name: Build and push gateway image
         uses: docker/build-push-action@v2
@@ -53,4 +53,4 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
-            ghcr.io/struckchure/recipe/blog-with-micro-gateway:latest
+            ghcr.io/struckchure/blog-with-micro-gateway:latest
