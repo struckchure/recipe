@@ -8,7 +8,7 @@ on:
       - golang/blog-with-microservice/**
 
 jobs:
-  build-and-push-auth:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -27,7 +27,7 @@ jobs:
       - name: Build and push auth image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ github.workspace }}/blog-with-microservice/auth
+          context: ${{ github.workspace }}/golang/blog-with-microservice/auth
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
@@ -36,7 +36,7 @@ jobs:
       - name: Build and push posts image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ github.workspace }}/blog-with-microservice/posts
+          context: ${{ github.workspace }}/golang/blog-with-microservice/posts
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
@@ -45,7 +45,7 @@ jobs:
       - name: Build and push gateway image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ github.workspace }}/blog-with-microservice/gateway
+          context: ${{ github.workspace }}/golang/blog-with-microservice/gateway
           platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
           tags: |
