@@ -2,10 +2,10 @@ name: Blog with microservice Docker CI
 
 on:
   push:
-    paths:
-      - "blog-with-microservice/*"
     branches:
       - main
+    paths:
+      - golang/blog-with-microservice/*
 
 jobs:
   build-and-push-auth:
