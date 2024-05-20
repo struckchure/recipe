@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: blog-with-micro-gateway
-          image: ghcr.io/struckchure/recipe/blog-with-micro-gateway
+          image: ghcr.io/struckchure/blog-with-micro-gateway
           imagePullPolicy: Always
           resources:
             requests:

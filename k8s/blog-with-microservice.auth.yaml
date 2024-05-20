@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: blog-with-micro-auth
-          image: ghcr.io/struckchure/recipe/blog-with-micro-auth
+          image: ghcr.io/struckchure/blog-with-micro-auth
           imagePullPolicy: Always
           resources:
             requests:
