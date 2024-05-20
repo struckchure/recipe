@@ -1,5 +1,7 @@
 # Blog With Microservice
 
+This project consists of 2 microservices and 1 api gateway, all written in golan.
+
 # Setup Tools
 
 - Generate proto stubs
