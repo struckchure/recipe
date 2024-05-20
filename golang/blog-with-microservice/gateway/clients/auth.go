@@ -3,6 +3,7 @@ package clients
 import (
 	"context"
 	"log"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -24,7 +25,7 @@ func (c *AuthClient) Register(args *auth_pb.RegisterRequest) (*auth_pb.RegisterR
 }
 
 func NewAuthClient() *AuthClient {
-	conn, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(os.Getenv("AUTH_SERVICE_URL"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}

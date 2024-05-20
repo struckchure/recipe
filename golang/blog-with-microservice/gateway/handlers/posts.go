@@ -30,6 +30,8 @@ func (a *PostHandler) List(c *fiber.Ctx) error {
 func (a *PostHandler) Create(c *fiber.Ctx) error {
 	var payload post_pb.CreateRequest
 
+	payload.Author = c.Locals("userId").(string)
+
 	if err := json.Unmarshal(c.Body(), &payload); err != nil {
 		return err
 	}
@@ -57,6 +59,8 @@ func (a *PostHandler) Get(c *fiber.Ctx) error {
 
 func (a *PostHandler) Update(c *fiber.Ctx) error {
 	var payload post_pb.UpdateRequest
+
+	payload.Author = c.Locals("userId").(*string)
 
 	if err := json.Unmarshal(c.Body(), &payload); err != nil {
 		return err

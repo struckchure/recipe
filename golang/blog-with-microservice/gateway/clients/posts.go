@@ -3,6 +3,7 @@ package clients
 import (
 	"context"
 	"log"
+	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -36,7 +37,7 @@ func (c *PostClient) Delete(args *post_pb.DeleteRequest) (*post_pb.DeleteRespons
 }
 
 func NewPostClient() *PostClient {
-	conn, err := grpc.NewClient("localhost:50052", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, err := grpc.NewClient(os.Getenv("POST_SERVICE_URL"), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("did not connect: %v", err)
 	}
