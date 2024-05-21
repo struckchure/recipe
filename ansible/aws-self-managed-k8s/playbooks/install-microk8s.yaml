@@ -38,13 +38,3 @@
         sysctl_set: yes
         state: present
         reload: yes
-
-- name: Enable necessary MicroK8s services
-  hosts: control_plane
-  become: true
-  gather_facts: false
-
-  tasks:
-    - name: Enable necessary MicroK8s services
-      shell: microk8s enable dns host-access ingress
-      become: true

@@ -2,7 +2,12 @@
 - name: Allow external IP connection to control plane
   hosts: control_plane
   become: true
+  gather_facts: false
+
   tasks:
+    - name: Enable necessary MicroK8s addons
+      shell: microk8s enable dns ingress
+
     - name: Stop MicroK8s
       command: microk8s stop
 
