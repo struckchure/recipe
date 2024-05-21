@@ -120,13 +120,6 @@ resource "aws_instance" "recipe_k8s_control_plane" {
   }
 }
 
-resource "aws_eip" "recipe_k8s_control_plane_eip" {
-  instance = aws_instance.recipe_k8s_control_plane.id
-  tags = {
-    Name = "recipe-k8s-control-plane-eip"
-  }
-}
-
 variable "instance_count" {
   description = "Number of worker nodes to create."
   type        = number
@@ -155,14 +148,6 @@ resource "aws_instance" "recipe_k8s_worker_nodes" {
 
   tags = {
     Name = "recipe-k8s-worker-node-${count.index + 1}"
-  }
-}
-
-resource "aws_eip" "recipe_k8s_worker_nodes_eips" {
-  count    = var.instance_count
-  instance = aws_instance.recipe_k8s_worker_nodes[count.index].id
-  tags = {
-    Name = "recipe-k8s-worker-node-${count.index + 1}-eip"
   }
 }
 
