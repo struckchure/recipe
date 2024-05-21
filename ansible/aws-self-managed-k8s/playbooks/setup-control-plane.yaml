@@ -1,0 +1,68 @@
+---
+- name: Allow external IP connection to control plane
+  hosts: control_plane
+  become: true
+  tasks:
+    - name: Stop MicroK8s
+      command: microk8s stop
+
+    - name: Update kube-apiserver configuration
+      command: sudo sed -i 's/--advertise-address=.*/--advertise-address={{ ansible_host }}/' /var/snap/microk8s/current/args/kube-apiserver
+
+    - name: Read the file into a variable
+      slurp:
+        src: /var/snap/microk8s/current/certs/csr.conf.template
+      register: file_content
+
+    - name: Convert file content to string
+      set_fact:
+        file_content_str: "{{ file_content.content | b64decode }}"
+
+    - name: Extract alt names section
+      set_fact:
+        alt_names: >
+          {{
+            file_content_str.split('\n')
+            | select('search', '^(DNS|IP)\.[0-9]+ = .+$')
+            | map('regex_replace', '^(DNS|IP)\.[0-9]+ = (.+)$', '\\2')
+            | list
+          }}
+
+    - name: Get the last IP entry
+      set_fact:
+        last_ip_entry: "{{ file_content_str.split('\n') | select('search', '^IP\\.[0-9]+') | last }}"
+
+    - name: Extract index from last IP entry
+      set_fact:
+        last_index: "{{ last_ip_entry.split('=')[0] | regex_replace('^IP\\.', '') | int }}"
+
+    - name: Check if the new IP address is already in alt names
+      set_fact:
+        ip_exists: "{{ ansible_host in alt_names }}"
+
+    - name: Construct new IP entry
+      set_fact:
+        new_ip_entry: "IP.{{ (last_index | int) + 1 }} = {{ ansible_host }}"
+
+    - name: Append new IP entry if it does not exist
+      lineinfile:
+        path: "/var/snap/microk8s/current/certs/csr.conf.template"
+        line: "{{ new_ip_entry }}"
+        insertafter: "{{ last_ip_entry }}"
+      when: not ip_exists
+
+    - name: Display result
+      debug:
+        msg: "New IP entry '{{ new_ip_entry }}' has been added to '/var/snap/microk8s/current/certs/csr.conf.template' if it didn't already exist."
+
+    - name: Refresh ca.crt
+      command: microk8s refresh-certs --cert ca.crt
+
+    - name: Refresh front-proxy-client.crt
+      command: microk8s refresh-certs --cert front-proxy-client.crt
+
+    - name: Refresh server.crt
+      command: microk8s refresh-certs --cert server.crt
+
+    - name: Start MicroK8s
+      command: microk8s start

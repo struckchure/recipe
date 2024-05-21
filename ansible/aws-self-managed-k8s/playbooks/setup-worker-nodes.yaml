@@ -1,0 +1,91 @@
+---
+- name: Generate MicroK8s Join Command on Control Plane
+  hosts: control_plane
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Generate join commands for each worker node
+      shell: |
+        microk8s add-node > /home/{{ ansible_user }}/add_node_output_{{ item }}.txt
+      args:
+        executable: /bin/bash
+      with_sequence: start=1 end={{ groups['worker_nodes'] | length }}
+
+    - name: Read join command outputs
+      slurp:
+        src: /home/{{ ansible_user }}/add_node_output_{{ item }}.txt
+      register: add_node_output
+      with_sequence: start=1 end={{ groups['worker_nodes'] | length }}
+
+    - name: Convert join command outputs to list
+      set_fact:
+        add_node_output_lines: "{{ add_node_output.results | map(attribute='content') | map('b64decode') | map('split', '\n') | list }}"
+
+    - name: Extract join commands from outputs
+      set_fact:
+        join_commands: "{{ join_commands | default([]) + [item] }}"
+      loop: "{{ add_node_output_lines }}"
+      loop_control:
+        loop_var: add_node_output_line
+      vars:
+        item: "{{ add_node_output_line | select('search', 'microk8s join .* --worker') | list }}"
+
+    - name: Write join command to files
+      copy:
+        content: "{{ item.1 }}"
+        dest: "/home/{{ ansible_user }}/join_command_{{ item.0 + 1 }}.sh"
+        mode: "0755"
+      with_indexed_items: "{{ join_commands }}"
+
+    - name: Fetch generated join command files
+      fetch:
+        src: "/home/{{ ansible_user }}/join_command_{{ item + 1 }}.sh"
+        dest: "../join_command_{{ item + 1 }}.sh"
+        flat: yes
+      loop: "{{ range(0, groups['worker_nodes']|length) | list }}"
+
+    - name: Delete join command files from control plane
+      file:
+        path: "/home/{{ ansible_user }}/join_command_{{ (item + 1) | string }}.sh"
+        state: absent
+      loop: "{{ range(0, groups['worker_nodes']|length) | list }}"
+
+- name: Distribute and Execute MicroK8s Join Command on Worker Nodes
+  hosts: worker_nodes
+  become: true
+  gather_facts: false
+  tasks:
+    - name: Create list of worker nodes and their respective join command files
+      set_fact:
+        worker_join_commands: "{{ groups['worker_nodes'] | zip(range(1, groups['worker_nodes'] | length + 1)) | list }}"
+
+    - name: Copy join command to worker nodes
+      copy:
+        src: "../join_command_{{ item.1 }}.sh"
+        dest: "/home/{{ ansible_user }}/join_command.sh"
+        mode: "0755"
+      loop: "{{ worker_join_commands }}"
+      loop_control:
+        loop_var: item
+
+    - name: Execute join command on worker nodes in background
+      shell: |
+        /home/{{ ansible_user }}/join_command.sh
+      args:
+        executable: /bin/bash
+      async: 300
+      poll: 0
+
+    - name: Delete join command file from worker nodes
+      file:
+        path: "/home/{{ ansible_user }}/join_command.sh"
+        state: absent
+
+- name: Delete local join command files
+  hosts: localhost
+  tasks:
+    - name: Delete join command file from local machine
+      file:
+        path: "../join_command_{{ (item + 1) | string }}.sh"
+        state: absent
+      loop: "{{ range(0, groups['worker_nodes']|length) | list }}"

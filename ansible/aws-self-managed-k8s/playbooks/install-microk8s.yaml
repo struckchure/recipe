@@ -1,0 +1,50 @@
+---
+- name: Install MicroK8s on Control Plane and Worker Nodes
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Update and upgrade apt packages
+      shell: |
+        apt update -y
+        apt upgrade -y
+      become: true
+
+    - name: Install MicroK8s
+      snap:
+        name: microk8s
+        classic: yes
+        channel: "1.30/stable"
+        state: present
+
+    - name: Add the current user to the MicroK8s group
+      user:
+        name: "{{ ansible_user }}"
+        groups: microk8s
+        append: yes
+
+    - name: Create .kube directory
+      file:
+        path: "/home/{{ ansible_user }}/.kube"
+        state: directory
+        mode: "0700"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Allow iptables to see bridged traffic
+      sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: "1"
+        sysctl_set: yes
+        state: present
+        reload: yes
+
+- name: Enable necessary MicroK8s services
+  hosts: control_plane
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Enable necessary MicroK8s services
+      shell: microk8s enable dns host-access ingress
+      become: true
