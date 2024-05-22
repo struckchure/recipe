@@ -10,6 +10,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
+import { AuthUser } from 'src/auth.decorator';
 import { AuthGuard } from 'src/auth.guard';
 
 import { CreateRequest, ListRequest, UpdateRequest } from 'src/micros/posts';
@@ -26,8 +27,8 @@ export class PostsController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(@Body() payload: CreateRequest) {
-    return await this.postsService.create(payload);
+  async create(@Body() payload: CreateRequest, @AuthUser() userId: string) {
+    return await this.postsService.create({ ...payload, author: userId });
   }
 
   @Get(':id')
@@ -37,10 +38,14 @@ export class PostsController {
 
   @Post(':id')
   @UseGuards(AuthGuard)
-  async update(@Param('id') id: string, @Body() payload: UpdateRequest) {
+  async update(
+    @Param('id') id: string,
+    @Body() payload: UpdateRequest,
+    @AuthUser() userId: string,
+  ) {
     payload.id = id;
 
-    return await this.postsService.update(payload);
+    return await this.postsService.update({ ...payload, author: userId });
   }
 
   @Delete(':id')
