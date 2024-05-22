@@ -5,6 +5,7 @@ Welcome to the **Recipe** repository! This is a collection of various demo proje
 ## Table of Contents
 
 - [Projects](#projects)
+- [Upcoming Projects](#upcoming-projects)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [License](#license)
