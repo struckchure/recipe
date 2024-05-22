@@ -25,6 +25,16 @@ Here are some of the projects you'll find in this repository:
   - [Self-Managed Kubernetes Provision](./terraform/aws-self-managed-k8s/) (Terraform)
   - [Self-Managed Kubernetes Cluster Setup](./ansible/aws-self-managed-k8s/) (Ansible)
 
+## Upcoming Projects
+
+Here are some projects you can look forward to;
+
+- [ ] Video Streaming Platform
+- [ ] Logistics API (w/ Microservices)
+- [ ] Logistics Web Application (maybe mobile too)
+- [ ] eCommerce API (w/ Microservices)
+- [ ] Log Streaming API + Web Application
+
 ## Getting Started
 
 To get started with any of the projects in this repository:
