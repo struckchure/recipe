@@ -13,22 +13,17 @@ Welcome to the **Recipe** repository! This is a collection of various demo proje
 
 Here are some of the projects you'll find in this repository:
 
-1. **Blog Microservices**
+- **Microservices**
 
-   Two microservices built in Go to demonstrate inter-service communication, scalability, and maintainability.
+  - [Blog / Auth Service](./golang/blog-with-microservice/auth/) (Golang)
+  - [Blog / Post Service](./golang/blog-with-microservice/posts/) (Golang)
+  - [Blog / Gateway Service](./golang/blog-with-microservice/gateway/) (Golang)
+  - [Blog / Gateway Service](./typescript/blog-gateway) (NestJs)
 
-   - [Auth Microservice](./golang/blog-with-microservice/auth)
-   - [Post Microservice](./golang/blog-with-microservice/posts)
-
-2. **Blog Gateway Service**
-
-   A gateway service built in Go that aggregates the responses from the microservices and exposes a unified API.
-
-   - [Blog Gateway Service](./golang/blog-with-microservice/gateway)
-
-3. **NestJS Gateway Service**
-   The same gateway API implemented using NestJS to showcase the differences and advantages of using a Node.js framework for building APIs.
-   - [NestJS Blog Gateway Service](./typescript/blog-gateway)
+- **DevOps**
+  - [Blog / Microservice Deployment](./k8s/blog-with-microservice/) (Kubernetes)
+  - [Self-Managed Kubernetes Provision](./terraform/aws-self-managed-k8s/) (Terraform)
+  - [Self-Managed Kubernetes Cluster Setup](./ansible/aws-self-managed-k8s/) (Ansible)
 
 ## Getting Started
 
