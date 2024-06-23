@@ -57,7 +57,6 @@ export function Room({ userId, channelName }: RoomProps) {
           <div className="w-full h-full">
             <div className="w-[200px] h-[200px] rounded-lg overflow-hidden absolute bottom-0 right-0">
               <LocalUser
-                audioTrack={localMicrophoneTrack}
                 cameraOn={cameraOn}
                 micOn={micOn}
                 videoTrack={localCameraTrack}
