@@ -1,23 +1,18 @@
-import { useState } from "react";
 import "./App.css";
 
-import { useSubscribe } from "rodelar/react";
+import { RodelarClient } from "rodelar/core";
 
 function App() {
-  const [message, setMessage] = useState<unknown>();
+  const client = new RodelarClient({ url: "ws://localhost:3000/ws" });
 
-  useSubscribe(
-    { url: "ws://localhost:3000/ws/" },
-    {
-      queue: "test",
-      callback(data) {
-        console.log("first :", data);
-        setMessage(data.message);
-      },
-    }
-  );
+  client.subscribe({
+    event: "TEST",
+    callback(data) {
+      console.log("TEST: ", data);
+    },
+  });
 
-  return <h1>Vite + React {JSON.stringify(message)}</h1>;
+  return <h1>Vite + React</h1>;
 }
 
 export default App;
